@@ -21,6 +21,11 @@ object AppConfig {
         fallback = false
     )
 
+    // Proxy settings
+    var isProxyEnabled: Boolean by prefs.dynamic("isProxyEnabled", fallback = false)
+    var proxyHost: String by prefs.dynamic("proxyHost", fallback = "")
+    var proxyPort: Int by prefs.dynamic("proxyPort", fallback = 0)
+
     val defaultDataDir by lazy { app.getExternalFilesDir("data")?.absolutePath!! }
 
     private var mDataDir: String by prefs.dynamic("dataDir", fallback = defaultDataDir)

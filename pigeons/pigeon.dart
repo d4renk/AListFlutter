@@ -25,6 +25,19 @@ abstract class AppConfig {
   bool isSilentJumpAppEnabled();
 
   void setSilentJumpAppEnabled(bool enabled);
+
+  // Proxy settings
+  bool isProxyEnabled();
+  
+  void setProxyEnabled(bool enabled);
+  
+  String getProxyHost();
+  
+  void setProxyHost(String host);
+  
+  int getProxyPort();
+  
+  void setProxyPort(int port);
 }
 
 @HostApi()

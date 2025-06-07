@@ -36,6 +36,34 @@ class WebScreenState extends State<WebScreen> {
   String _url = "http://localhost:5244";
   bool _canGoBack = false;
 
+  void _updateProxySettings() async {
+    final cfg = AppConfig();
+    final isEnabled = await cfg.isProxyEnabled();
+    if (isEnabled) {
+      final host = await cfg.getProxyHost();
+      final port = await cfg.getProxyPort();
+      if (host.isNotEmpty && port > 0) {
+<<<<<<< HEAD
+        settings = settings.copyWith(
+          proxyServer: ProxyServer(host: host, port: port),
+        );
+        _webViewController?.setSettings(settings: settings);
+      }
+    } else {
+      settings = settings.copyWith(proxyServer: null);
+      _webViewController?.setSettings(settings: settings);
+=======
+        // For WebView, we need to set proxy through platform-specific code
+        if (!kIsWeb && defaultTargetPlatform == TargetPlatform.android) {
+          // On Android, proxy settings are handled at system level
+          // or through WebView-specific configuration
+          log("Setting WebView proxy: $host:$port");
+        }
+      }
+>>>>>>> 38f7e93 (http proxy)
+    }
+  }
+
   onClickNavigationBar() {
     log("onClickNavigationBar");
     _webViewController?.reload();
@@ -46,6 +74,8 @@ class WebScreenState extends State<WebScreen> {
     Android()
         .getAListHttpPort()
         .then((port) => {_url = "http://localhost:$port"});
+
+    _updateProxySettings();
 
     // NativeEvent().addServiceStatusListener((isRunning) {
     //   if (isRunning) _webViewController?.reload();

@@ -6,6 +6,7 @@ import 'package:alist_flutter/pages/alist/alist.dart';
 import 'package:alist_flutter/pages/app_update_dialog.dart';
 import 'package:alist_flutter/pages/settings/settings.dart';
 import 'package:alist_flutter/pages/web/web.dart';
+import 'package:alist_flutter/utils/http_client.dart';
 import 'package:fade_indexed_stack/fade_indexed_stack.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -18,6 +19,14 @@ import 'contant/native_bridge.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  
+  // Initialize HTTP client with proxy support
+<<<<<<< HEAD
+  await ProxyHttpClient.instance._updateProxySettings();
+=======
+  await ProxyHttpClient.instance.updateProxySettings();
+>>>>>>> 38f7e93 (http proxy)
+  
   // Android
   if (!kIsWeb &&
       kDebugMode &&

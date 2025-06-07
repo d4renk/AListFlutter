@@ -38,4 +38,23 @@ object AppConfigBridge : GeneratedApi.AppConfig {
     override fun setWakeLockEnabled(enabled: Boolean) {
         AppConfig.isWakeLockEnabled = enabled
     }
+
+    // Proxy settings
+    override fun isProxyEnabled() = AppConfig.isProxyEnabled
+
+    override fun setProxyEnabled(enabled: Boolean) {
+        AppConfig.isProxyEnabled = enabled
+    }
+
+    override fun getProxyHost() = AppConfig.proxyHost
+
+    override fun setProxyHost(host: String) {
+        AppConfig.proxyHost = host
+    }
+
+    override fun getProxyPort() = AppConfig.proxyPort
+
+    override fun setProxyPort(port: Int) {
+        AppConfig.proxyPort = port
+    }
 }

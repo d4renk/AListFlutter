@@ -8,6 +8,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:alist_flutter/utils/http_client.dart';
 
 import '../../generated/l10n.dart';
 
@@ -155,7 +156,65 @@ class _SettingsScreenState extends State<SettingsScreen> {
               value: controller._silentJumpApp.value,
               onChanged: (value) {
                 controller.silentJumpApp = value;
-              })
+              }),
+
+          // Proxy Settings Section
+          Card(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Text(
+                    'HTTP Proxy Settings',
+                    style: Theme.of(context).textTheme.titleLarge,
+                  ),
+                ),
+                Obx(() => SwitchListTile(
+                      title: const Text('Enable Proxy'),
+                      value: controller.proxyEnabled,
+                      onChanged: (bool value) {
+                        controller.proxyEnabled = value;
+                      },
+                    )),
+                Obx(() => Visibility(
+                      visible: controller.proxyEnabled,
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Column(
+                          children: [
+                            TextField(
+                              decoration: const InputDecoration(
+                                labelText: 'Proxy Host',
+                                hintText: 'Enter proxy host (e.g., 127.0.0.1)',
+                              ),
+                              controller: TextEditingController(
+                                  text: controller.proxyHost),
+                              onChanged: (value) {
+                                controller.proxyHost = value;
+                              },
+                            ),
+                            const SizedBox(height: 16),
+                            TextField(
+                              decoration: const InputDecoration(
+                                labelText: 'Proxy Port',
+                                hintText: 'Enter proxy port (e.g., 8080)',
+                              ),
+                              keyboardType: TextInputType.number,
+                              controller: TextEditingController(
+                                  text: controller.proxyPort.toString()),
+                              onChanged: (value) {
+                                controller.proxyPort =
+                                    int.tryParse(value) ?? 0;
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+                    )),
+              ],
+            ),
+          ),
         ],
       ),
     ));
@@ -168,6 +227,11 @@ class _SettingsController extends GetxController {
   final _managerStorageGranted = true.obs;
   final _notificationGranted = true.obs;
   final _storageGranted = true.obs;
+
+  // Proxy settings
+  final _proxyEnabled = false.obs;
+  final _proxyHost = "".obs;
+  final _proxyPort = 0.obs;
 
   setDataDir(String value) async {
     NativeBridge.appConfig.setDataDir(value);
@@ -219,6 +283,35 @@ class _SettingsController extends GetxController {
         NativeBridge.appConfig.setSilentJumpAppEnabled(value)
       };
 
+  get proxyEnabled => _proxyEnabled.value;
+  set proxyEnabled(value) => {
+        _proxyEnabled.value = value,
+        NativeBridge.appConfig.setProxyEnabled(value),
+        _updateProxySettings()
+      };
+
+  get proxyHost => _proxyHost.value;
+  set proxyHost(value) => {
+        _proxyHost.value = value,
+        NativeBridge.appConfig.setProxyHost(value),
+        _updateProxySettings()
+      };
+
+  get proxyPort => _proxyPort.value;
+  set proxyPort(value) => {
+        _proxyPort.value = value,
+        NativeBridge.appConfig.setProxyPort(value),
+        _updateProxySettings()
+      };
+
+  void _updateProxySettings() async {
+<<<<<<< HEAD
+    await ProxyHttpClient.instance._updateProxySettings();
+=======
+    await ProxyHttpClient.instance.updateProxySettings();
+>>>>>>> 38f7e93 (http proxy)
+  }
+
   @override
   void onInit() async {
     updateData();
@@ -233,6 +326,11 @@ class _SettingsController extends GetxController {
     cfg.isStartAtBootEnabled().then((value) => startAtBoot = value);
     cfg.isAutoOpenWebPageEnabled().then((value) => autoStartWebPage = value);
     cfg.isSilentJumpAppEnabled().then((value) => silentJumpApp = value);
+    
+    // Load proxy settings
+    cfg.isProxyEnabled().then((value) => proxyEnabled = value);
+    cfg.getProxyHost().then((value) => proxyHost = value);
+    cfg.getProxyPort().then((value) => proxyPort = value);
 
     _dataDir.value = await cfg.getDataDir();
 
