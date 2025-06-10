@@ -1,6 +1,6 @@
 #!/bin/bash
 
-GIT_REPO="https://github.com/d4renk/alist.git"
+GIT_REPO="https://github.com/d4renk/PikPak-netnr-workers.git"
 
 function to_int() {
     echo $(echo "$1" | grep -oE '[0-9]+' | tr -d '\n')
